@@ -70,53 +70,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
                if(geoFenceType.equalsIgnoreCase(Constants.WORK_GEOFENCE))
                {
                    Log.i(TAG, "Work Location Enter of Dwell event");
-
-                   //Put phone on silent
-                   changeRinger(Constants.SILENT);
-                   // Get the geofences that were triggered. A single event can trigger multiple geofences.
-                   List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-
-                   // Get the transition details as a String.
-                   String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                           this,
-                           geofenceTransition,
-                           triggeringGeofences
-                   );
-
-                   // Send notification and log the transition details.
-                   sendNotification(geofenceTransitionDetails,"");
-
-                   //Put phone on silent here
-
-
-                   Log.i(TAG, geofenceTransitionDetails);
-
-
+                   processGeoFenceEvent(geofencingEvent,Constants.RINGER_MODE_SILENT,"");
 
                }
                else if(geoFenceType.equalsIgnoreCase(Constants.HOME_GEOFENCE))
                {
                    Log.i(TAG, "Home Location Enter of Dwell event");
-                   changeRinger(Constants.NORMAL);
-                   // Get the geofences that were triggered. A single event can trigger multiple geofences.
-                   List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-
-                   // Get the transition details as a String.
-                   String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                           this,
-                           geofenceTransition,
-                           triggeringGeofences
-                   );
-
-                   // Send notification and log the transition details.
-                   sendNotification(geofenceTransitionDetails,Constants.HOME_APPLIANCES_TURN_ON_MSG);
-
-                   //Put phone on silent here
-
-
-                   Log.i(TAG, geofenceTransitionDetails);
+                   //While entering home location, put phone on normal and show appliances turning on message
+                   processGeoFenceEvent(geofencingEvent,Constants.RINGER_MODE_NORMAL,Constants.HOME_APPLIANCES_TURN_ON_MSG);
 
 
                }
@@ -131,52 +92,15 @@ public class GeofenceTransitionsIntentService extends IntentService {
             {
                 Log.i(TAG, "Work Location Exit event");
 
-                //Put phone on silent
-                changeRinger(Constants.NORMAL);
-                // Get the geofences that were triggered. A single event can trigger multiple geofences.
-                List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
-
-                // Get the transition details as a String.
-                String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                        this,
-                        geofenceTransition,
-                        triggeringGeofences
-                );
-
-                // Send notification and log the transition details.
-                sendNotification(geofenceTransitionDetails,"");
-
-                //Put phone on silent here
-
-
-                Log.i(TAG, geofenceTransitionDetails);
-
+                processGeoFenceEvent(geofencingEvent,Constants.RINGER_MODE_NORMAL,"");
 
 
             }
             else if(geoFenceType.equalsIgnoreCase(Constants.HOME_GEOFENCE))
             {
                 Log.i(TAG, "Home Location Exit event");
-
-                // Get the geofences that were triggered. A single event can trigger multiple geofences.
-                List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-
-                // Get the transition details as a String.
-                String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                        this,
-                        geofenceTransition,
-                        triggeringGeofences
-                );
-
-                // Send notification and log the transition details.
-                sendNotification(geofenceTransitionDetails,Constants.HOME_APPLIANCES_TURN_OFF_MSG);
-
-                //Put phone on silent here
-
-
-                Log.i(TAG, geofenceTransitionDetails);
+                processGeoFenceEvent(geofencingEvent,Constants.RINGER_MODE_NORMAL,Constants.HOME_APPLIANCES_TURN_OFF_MSG);
 
 
             }
@@ -186,6 +110,35 @@ public class GeofenceTransitionsIntentService extends IntentService {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
         }
+    }
+
+    public void processGeoFenceEvent(GeofencingEvent geofencingEvent,String ringerMode, String msg)
+    {
+
+        int geofenceTransition = geofencingEvent.getGeofenceTransition();
+        //Put phone on silent
+        changeRinger(ringerMode);
+        // Get the geofences that were triggered. A single event can trigger multiple geofences.
+        List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+
+
+        // Get the transition details as a String.
+        String geofenceTransitionDetails = getGeofenceTransitionDetails(
+                this,
+                geofenceTransition,
+                triggeringGeofences
+        );
+
+        // Send notification and log the transition details.
+        sendNotification(geofenceTransitionDetails,msg);
+
+        //Put phone on silent here
+
+
+        Log.i(TAG, geofenceTransitionDetails);
+
+
+
     }
 
     /**
@@ -245,7 +198,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                         R.drawable.ic_launcher))
                 .setColor(Color.RED)
                 .setContentTitle(notificationDetails)
-                .setContentText(getString(R.string.geofence_transition_notification_text)+" "+msg)
+                .setContentText(msg)
                 .setContentIntent(notificationPendingIntent);
 
         // Dismiss notification once the user touches it.
@@ -280,7 +233,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     public void changeRinger(String ringerMode){
 
-        if(ringerMode.equalsIgnoreCase(Constants.SILENT)){
+        if(ringerMode.equalsIgnoreCase(Constants.RINGER_MODE_SILENT)){
             //Put on silent
             audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
             audioManager.setStreamVolume(AudioManager.STREAM_RING,0,0);
@@ -288,7 +241,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
             audioManager.setStreamMute(AudioManager.STREAM_RING,false);
             audioManager.setStreamMute(AudioManager.STREAM_NOTIFICATION,false);
         }
-        else if(ringerMode.equalsIgnoreCase(Constants.NORMAL)){
+        else if(ringerMode.equalsIgnoreCase(Constants.RINGER_MODE_NORMAL)){
             /* TO-DO Add code to increase volume*/
             audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
