@@ -1,5 +1,6 @@
 package com.mobilecomputing.mandar.contextawareapp;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
@@ -63,6 +64,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     String home;
     String work;
     AudioManager audioManager;
+    AlarmManager alarmManager;
+    private static Context context;
+
+    public static Context getAppContext(){
+        return MainActivity.context;
+    }
 
     /////
 
@@ -113,6 +120,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Sat=(CheckBox)findViewById(R.id.sat);
         days=new ArrayList<String>();
 
+        MainActivity.context = getApplicationContext();
+        alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         //Register on click listener
         viewSchedule.setOnClickListener(this);
         addrecord.setOnClickListener(this);
@@ -364,6 +373,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         {
 
 
+
             fromstrDateTime = tp.getCurrentHour() + ":" + tp.getCurrentMinute();
             tostrDateTime = tp1.getCurrentHour() + ":" + tp1.getCurrentMinute();
             if (Sun.isChecked() == true) {
@@ -403,6 +413,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 db.addUserInfo(userInfo);
 
+                //For start, use tp
+                setAlarm(tp.getCurrentHour(),tp.getCurrentMinute(),days.get(i),1,0);
+
+                //For end,use tp1
+                setAlarm(tp1.getCurrentHour(),tp1.getCurrentMinute(),days.get(i),0,1);
+
             }
 
 
@@ -411,7 +427,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
 
-            Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_SHORT).show();
             days.clear();
 
         }
@@ -422,6 +438,58 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    /**
+     * Set an alarm
+     */
+    public void setAlarm(int hour,int minutes,String day,int start,int end){
+        PendingIntent alarmIntent;
+
+        Intent intent;
+        if(start == 1){
+            intent = new Intent(this, StartAlarmReceiver.class);
+
+
+        }else {
+            intent = new Intent(this, EndAlarmReceiver.class);
+
+
+        }
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minutes);
+        calendar.set(Calendar.DAY_OF_WEEK,getDayofWeek(day));
+
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY*7, alarmIntent);
+    }
+
+    public int getDayofWeek(String day){
+        switch(day)
+        {
+            case "Monday":
+                return Calendar.MONDAY;
+
+            case "Tuesday":
+                return Calendar.TUESDAY;
+            case "Wednesday":
+                return Calendar.WEDNESDAY;
+            case "Thursday":
+                return Calendar.THURSDAY;
+            case "Friday":
+                return Calendar.FRIDAY;
+            case "Saturday":
+                return Calendar.SATURDAY;
+            case "Sunday":
+                return Calendar.SUNDAY;
+            default:
+                return 1;
+        }
+
+    }
     /**
      * Runs when a GoogleApiClient object successfully connects.
      */
@@ -488,6 +556,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // addGeofences() and removeGeofences().
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
+
 
 
 
