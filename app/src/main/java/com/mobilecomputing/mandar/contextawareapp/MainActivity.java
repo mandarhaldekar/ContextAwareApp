@@ -1,13 +1,19 @@
 package com.mobilecomputing.mandar.contextawareapp;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.media.AudioManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,17 +35,19 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import android.location.Address;
 
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class MainActivity extends FragmentActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
     private static final String TAG = "Context Aware App" ;
     TimePicker tp;
     DBManager db;
     TimePicker tp1;
     Button addrecord;
+    Button viewSchedule;
     EditText worklocation;
     EditText homelocation;
     CheckBox Sun;
@@ -92,6 +100,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         homelocation=(EditText)findViewById(R.id.editText);
         worklocation=(EditText)findViewById(R.id.editText2);
         addrecord=(Button)findViewById(R.id.button);
+        viewSchedule=(Button)findViewById(R.id.buttonViewSchedule);
         addrecord.setOnClickListener(this);
         tp=(TimePicker)findViewById(R.id.timePicker);
         tp1=(TimePicker)findViewById(R.id.timePicker1);
@@ -104,7 +113,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Sat=(CheckBox)findViewById(R.id.sat);
         days=new ArrayList<String>();
 
+        //Register on click listener
+        viewSchedule.setOnClickListener(this);
+        addrecord.setOnClickListener(this);
+
         db = new DBManager(this);
+        db.deleteAllUserInfo();
 
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -346,8 +360,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        if (v.getId()==R.id.button) {
-            days.clear();
+        if (v.getId()==R.id.button)
+        {
+
+
             fromstrDateTime = tp.getCurrentHour() + ":" + tp.getCurrentMinute();
             tostrDateTime = tp1.getCurrentHour() + ":" + tp1.getCurrentMinute();
             if (Sun.isChecked() == true) {
@@ -382,7 +398,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             //Inserting into database
             for(int i=0;i<days.size();i++){
                 //Record Id is zero by default
+                Log.d("DB INSERT","Adding day : "+days.get(i));
                 UserInfo userInfo = new UserInfo(0,fromstrDateTime,tostrDateTime,days.get(i),workLocationLat,workLocationLong,homeLocationLat,homeLocationLong);
+
                 db.addUserInfo(userInfo);
 
             }
@@ -392,21 +410,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
 
-            //set phone to silent
 
-            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-            audioManager.setStreamVolume(AudioManager.STREAM_RING,0,0);
-            audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION,0,0);
+            Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_LONG).show();
+            days.clear();
 
-            String mode="regular";
-            if (audioManager.getRingerMode()==AudioManager.RINGER_MODE_SILENT)
-            {
-                mode="silent";
-            }
-            Toast.makeText(this, "Record added"+ days.toString()+" "+fromstrDateTime+"Ringer mode:"+mode,Toast.LENGTH_LONG).show();
-            audioManager.setStreamMute(AudioManager.STREAM_RING,false);
-            audioManager.setStreamMute(AudioManager.STREAM_NOTIFICATION,false);
-
+        }
+        else if (v.getId()==R.id.buttonViewSchedule) {
+            Intent viewScheduleIntent=new Intent(this,ViewSchedule.class);
+            startActivity(viewScheduleIntent);
         }
 
     }
@@ -477,6 +488,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // addGeofences() and removeGeofences().
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
+
 
 
 }

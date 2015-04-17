@@ -6,38 +6,49 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:orientation="vertical" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ADD"
-        android:id="@+id/buttonHomeLocation"
-        android:onClick="addHomeLocationButtonHandler"
-        android:layout_gravity="right" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:hint="Enter the home address" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:hint="Enter the home address" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText2"
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:layout_marginTop="07dp"
-        android:hint="Enter your work/school location"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true" />
+            android:hint="Enter work/school location"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentLeft="true"
+             />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:id="@+id/buttonHomeLocation"
+                android:onClick="addHomeLocationButtonHandler"
+                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/editText"
+                android:layout_alignBottom="@+id/editText"
+                 />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:id="@+id/buttonWorkLocation"
+                android:onClick="addWorkLocationButtonHandler"
+                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/editText2"
+                android:layout_alignBottom="@+id/editText2"
+                 />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:id="@+id/buttonWorkLocation"
-        android:onClick="addWorkLocationButtonHandler"
-        android:layout_gravity="right" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -101,28 +112,40 @@
                 android:id="@+id/button"
                 android:text="Add to schedule"
                 android:paddingTop="10dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonViewSchedule"
+                android:text="View Schedule"
+                android:paddingTop="10dp"/>
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TimePicker
-                android:layout_width="228dp"
-                android:layout_height="274dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/timePicker"
                 android:paddingLeft="15dp"
                 android:timePickerMode="spinner" />
 
+
             <TimePicker
                 android:layout_width="wrap_content"
-                android:layout_height="274dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/timePicker1"
                 android:paddingLeft="15dp"
-                android:layout_weight="0.5"
-                android:timePickerMode="spinner" />
-        </LinearLayout>
+                android:layout_below="@+id/timePicker"
+
+                android:timePickerMode="spinner"
+
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
 
     </LinearLayout>
+
 </LinearLayout>

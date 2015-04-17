@@ -78,8 +78,10 @@ public class DBManager extends SQLiteOpenHelper {
 
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
+
         values.put(KEY_FROMTIMESTAMP, userInfo.getFromTimeStamp()); // get FromTimeStamp
         values.put(KEY_TOTIMESTAMP, userInfo.getToTimeStamp()); // get author
+        values.put(KEY_DAY,userInfo.getDay());
         values.put(KEY_WORKLOCATIONLAT, userInfo.getWorkLocationLat());
         values.put(KEY_WORKLOCATIONLONG, userInfo.getWorkLocationLon());
         values.put(KEY_HOMELOCATIONLAT, userInfo.getHomeLocationLat());
@@ -119,10 +121,11 @@ public class DBManager extends SQLiteOpenHelper {
         userInfo.setRecordID(Integer.parseInt(cursor.getString(0)));
         userInfo.setFromTimeStamp(cursor.getString(1));
         userInfo.setToTimeStamp(cursor.getString(2));
-        userInfo.setWorkLocationLat(Double.parseDouble(cursor.getString(3)));
-        userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(4)));
-        userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(5)));
-        userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(6)));
+        userInfo.setDay(cursor.getString(3));
+        userInfo.setWorkLocationLat(Double.parseDouble(cursor.getString(4)));
+        userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(5)));
+        userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(6)));
+        userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(7)));
 
         Log.d("getBook("+id+")", userInfo.toString());
 
@@ -149,10 +152,11 @@ public class DBManager extends SQLiteOpenHelper {
                 userInfo.setRecordID(Integer.parseInt(cursor.getString(0)));
                 userInfo.setFromTimeStamp(cursor.getString(1));
                 userInfo.setToTimeStamp(cursor.getString(2));
-                userInfo.setWorkLocationLat(Double.parseDouble(cursor.getString(3)));
-                userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(4)));
-                userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(5)));
-                userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(6)));
+                userInfo.setDay(cursor.getString(3));
+                userInfo.setWorkLocationLat(Double.parseDouble(cursor.getString(4)));
+                userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(5)));
+                userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(6)));
+                userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(7)));
 
 
                 // Add book to books
@@ -208,6 +212,20 @@ public class DBManager extends SQLiteOpenHelper {
         db.close();
 
         Log.d("delete user info", userInfo.toString());
+
+    }
+    public void deleteAllUserInfo() {
+
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 2. delete
+        db.execSQL("delete from "+ TABLE_USERINFO);
+
+        // 3. close
+        db.close();
+
+        Log.d("delete user info","Deleted all records");
 
     }
 }
