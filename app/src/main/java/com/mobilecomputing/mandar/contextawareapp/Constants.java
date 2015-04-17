@@ -33,8 +33,10 @@ public class Constants {
     public static final String HOME_GEOFENCE = "HOME";
     public static final String WORK_GEOFENCE = "WORK";
     public static final String GEOFENCE_TYPE = "TYPE";
-    public static final String SILENT = "silent";
-    public static final String NORMAL = "normal";
+    public static final String RINGER_MODE_SILENT = "silent";
+    public static final String RINGER_MODE_NORMAL = "normal";
+    public static final String RINGER_MODE_NONE = "none";
+
 
     //Messages
     public static final String HOME_APPLIANCES_TURN_ON_MSG = "Please turn on the home appliances if needed";
