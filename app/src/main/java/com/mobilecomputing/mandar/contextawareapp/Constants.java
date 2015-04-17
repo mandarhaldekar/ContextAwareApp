@@ -30,17 +30,18 @@ public class Constants {
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
     public static final float GEOFENCE_RADIUS_IN_METERS = 300; // 1 mile, 1.6 km
+    public static final String HOME_GEOFENCE = "HOME";
+    public static final String WORK_GEOFENCE = "WORK";
+    public static final String GEOFENCE_TYPE = "TYPE";
+    public static final String SILENT = "silent";
+    public static final String NORMAL = "normal";
 
-    /**
-     * Map for storing information about airports in the San Francisco bay area.
-     */
-    public static final HashMap<String, LatLng> BAY_AREA_LANDMARKS = new HashMap<String, LatLng>();
-    static {
-        // San Francisco International Airport.
-        BAY_AREA_LANDMARKS.put("UMBC", new LatLng(39.2540032, -76.7144164));
-        BAY_AREA_LANDMARKS.put("MY HOME", new LatLng(39.2574009,-76.699197));
+    //Messages
+    public static final String HOME_APPLIANCES_TURN_ON_MSG = "Please turn on the home appliances if needed";
+    public static final String HOME_APPLIANCES_TURN_OFF_MSG = "Please turn off the home appliances if needed";
 
-        // Googleplex.
-        BAY_AREA_LANDMARKS.put("GOOGLE", new LatLng(37.422611,-122.0840577));
-    }
+
+
+
+
 }

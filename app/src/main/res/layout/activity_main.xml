@@ -6,6 +6,14 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:orientation="vertical" >
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD"
+        android:id="@+id/buttonHomeLocation"
+        android:onClick="addHomeLocationButtonHandler"
+        android:layout_gravity="right" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +30,14 @@
         android:hint="Enter your work/school location"
         android:layout_below="@+id/editText"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:id="@+id/buttonWorkLocation"
+        android:onClick="addWorkLocationButtonHandler"
+        android:layout_gravity="right" />
 
     <TextView
         android:layout_width="wrap_content"

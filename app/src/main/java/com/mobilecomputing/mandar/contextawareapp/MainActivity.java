@@ -1,8 +1,10 @@
 package com.mobilecomputing.mandar.contextawareapp;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Geocoder;
 import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -27,10 +29,13 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import android.location.Address;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+    private static final String TAG = "Context Aware App" ;
     TimePicker tp;
     DBManager db;
     TimePicker tp1;
@@ -121,8 +126,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mGeofencesAdded = mSharedPreferences.getBoolean(Constants.GEOFENCES_ADDED_KEY, false);
 
 
-        // Get the geofences used. Geofence data is hard coded in this sample.
-        populateGeofenceList();
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
@@ -179,6 +182,168 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    public LatLng getLocationFromAddress(String strAddress) {
+
+
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
+
+    public void addToGeoFenceList(String address,LatLng latlng){
+        mGeofenceList.add(new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId(address)
+
+                        // Set the circular region of this geofence.
+                .setCircularRegion(
+                        latlng.latitude,
+                        latlng.longitude,
+                        Constants.GEOFENCE_RADIUS_IN_METERS
+                )
+
+                        // Set the expiration duration of the geofence. This geofence gets automatically
+                        // removed after this period of time.
+                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setLoiteringDelay(10000)
+
+                        // Set the transition types of interest. Alerts are only generated for these
+                        // transition. We track entry and exit transitions in this sample.
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT|Geofence.GEOFENCE_TRANSITION_DWELL)
+
+                        // Create the geofence.
+                .build());
+    }
+    public void addWorkLocationButtonHandler(View v){
+        //Get string
+
+        String workAddress = worklocation.getText().toString();
+
+        //Get lat and long
+        LatLng workLocation = getLocationFromAddress(workAddress);
+
+        if(workLocation == null){
+            Toast.makeText(this, "Could not find this place, please enter proper address", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Log.d(TAG,"Lat Long found"+Double.toString(workLocation.latitude)+","+Double.toString(workLocation.longitude));
+        //Else Add lat and long to geofencelist
+        addToGeoFenceList(workAddress,workLocation);
+
+        //Register for location
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(this, getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    // The GeofenceRequest object.
+                    getGeofencingRequest(),
+                    // A pending intent that that is reused when calling removeGeofences(). This
+                    // pending intent is used to generate an intent when a matched geofence
+                    // transition is observed.
+                    getGeofencePendingIntent(Constants.WORK_GEOFENCE)
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            logSecurityException(securityException);
+        }
+
+    }
+
+
+    public void addHomeLocationButtonHandler(View v){
+        //Get string
+
+        String homeAddress = homelocation.getText().toString();
+
+        //Get lat and long
+        LatLng homeLocation = getLocationFromAddress(homeAddress);
+
+        if(homeLocation == null){
+            Toast.makeText(this, "Could not find this place, please enter proper address", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Log.d(TAG,"Lat Long found"+Double.toString(homeLocation.latitude)+","+Double.toString(homeLocation.longitude));
+        //Else Add lat and long to geofencelist
+        addToGeoFenceList(homeAddress,homeLocation);
+
+        //Register for location
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(this, getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    // The GeofenceRequest object.
+                    getGeofencingRequest(),
+                    // A pending intent that that is reused when calling removeGeofences(). This
+                    // pending intent is used to generate an intent when a matched geofence
+                    // transition is observed.
+                    getGeofencePendingIntent(Constants.HOME_GEOFENCE)
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            logSecurityException(securityException);
+        }
+
+    }
+
+
+    /**
+     * Removes geofences, which stops further notifications when the device enters or exits
+     * previously registered geofences.
+     */
+    public void removeGeofencesButtonHandler(View view) {
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(this, getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            // Remove geofences.
+            LocationServices.GeofencingApi.removeGeofences(
+                    mGoogleApiClient,
+                    // This is the same pending intent that was used in addGeofences().
+                    getGeofencePendingIntent("")
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            logSecurityException(securityException);
+        }
+    }
+
+    private void logSecurityException(SecurityException securityException) {
+        Log.e(TAG, "Invalid location permission. " +
+                "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+    }
     @Override
     public void onClick(View v) {
         if (v.getId()==R.id.button) {
@@ -279,7 +444,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
         // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
         // is already inside that geofence.
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
 
         // Add the geofences to be monitored by geofencing service.
         builder.addGeofences(mGeofenceList);
@@ -300,50 +465,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
      *
      * @return A PendingIntent for the IntentService that handles geofence transitions.
      */
-    private PendingIntent getGeofencePendingIntent() {
+    private PendingIntent getGeofencePendingIntent(String geoFencetype) {
         // Reuse the PendingIntent if we already have it.
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+
+        intent.putExtra(Constants.GEOFENCE_TYPE,geoFencetype);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    /**
-     * This sample hard codes geofence data. A real app might dynamically create geofences based on
-     * the user's location.
-     *
-     * Modify this
-     */
-    public void populateGeofenceList() {
-        for (Map.Entry<String, LatLng> entry : Constants.BAY_AREA_LANDMARKS.entrySet()) {
 
-            mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
-                    .setRequestId(entry.getKey())
-
-                            // Set the circular region of this geofence.
-                    .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
-                            Constants.GEOFENCE_RADIUS_IN_METERS
-                    )
-
-                            // Set the expiration duration of the geofence. This geofence gets automatically
-                            // removed after this period of time.
-                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                    .setLoiteringDelay(10000)
-
-                            // Set the transition types of interest. Alerts are only generated for these
-                            // transition. We track entry and exit transitions in this sample.
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT|Geofence.GEOFENCE_TRANSITION_DWELL)
-
-                            // Create the geofence.
-                    .build());
-        }
-    }
 }
