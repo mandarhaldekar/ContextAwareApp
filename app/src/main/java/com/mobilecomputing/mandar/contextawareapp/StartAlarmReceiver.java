@@ -1,10 +1,16 @@
 package com.mobilecomputing.mandar.contextawareapp;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.AudioManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class StartAlarmReceiver extends BroadcastReceiver {
@@ -20,9 +26,16 @@ public class StartAlarmReceiver extends BroadcastReceiver {
         // an Intent broadcast.
 
         audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-        changeRinger(Constants.RINGER_MODE_SILENT);
-        Log.d("On star Alarm receiver ", "phone put on silent");
+
+        //Send notification
+        NotificationHandler.sendNotification(context,Constants.NOTIFICATION_TITLE,Constants.NOTIFICATION_SILENT_MESSAGE);
+
         //Put phone on silent
+        changeRinger(Constants.RINGER_MODE_SILENT);
+
+
+        Log.d("On star Alarm receiver ", "phone put on silent");
+
 
 
     }
@@ -46,4 +59,7 @@ public class StartAlarmReceiver extends BroadcastReceiver {
 
 
     }
+
+
+
 }

@@ -411,13 +411,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Log.d("DB INSERT","Adding day : "+days.get(i));
                 UserInfo userInfo = new UserInfo(0,fromstrDateTime,tostrDateTime,days.get(i),workLocationLat,workLocationLong,homeLocationLat,homeLocationLong);
 
-                db.addUserInfo(userInfo);
+                int recordID = db.addUserInfo(userInfo);
 
                 //For start, use tp
-                setAlarm(tp.getCurrentHour(),tp.getCurrentMinute(),days.get(i),1,0);
+                setAlarm(tp.getCurrentHour(),tp.getCurrentMinute(),days.get(i),1,0,recordID);
 
                 //For end,use tp1
-                setAlarm(tp1.getCurrentHour(),tp1.getCurrentMinute(),days.get(i),0,1);
+                setAlarm(tp1.getCurrentHour(),tp1.getCurrentMinute(),days.get(i),0,1,recordID);
 
             }
 
@@ -441,7 +441,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * Set an alarm
      */
-    public void setAlarm(int hour,int minutes,String day,int start,int end){
+    public void setAlarm(int hour,int minutes,String day,int start,int end,int recordID){
         PendingIntent alarmIntent;
 
         Intent intent;
@@ -454,7 +454,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
         }
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(this, recordID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

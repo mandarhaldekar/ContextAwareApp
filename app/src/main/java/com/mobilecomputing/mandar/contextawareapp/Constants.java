@@ -37,6 +37,13 @@ public class Constants {
     public static final String RINGER_MODE_NORMAL = "normal";
     public static final String RINGER_MODE_NONE = "none";
 
+    //Notification title
+    public static final String NOTIFICATION_TITLE = "Context Aware App";
+    public static final String NOTIFICATION_SILENT_MESSAGE = "Your phone is put on silent mode";
+    public static final String NOTIFICATION_NORMAL_MESSAGE = "Your phone is put on normal mode";
+
+
+
 
     //Messages
     public static final String HOME_APPLIANCES_TURN_ON_MSG = "Please turn on the home appliances if needed";

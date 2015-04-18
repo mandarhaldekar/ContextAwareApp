@@ -51,7 +51,7 @@ public class DBManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // SQL statement to create book table
         String CREATE_USERINFO_TABLE = "CREATE TABLE userInfo ( " +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "recordID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "fromTimeStamp TEXT, "+"toTimeStamp TEXT, "+"day TEXT, "+"workLocationLat REAL, "+"workLocationLong REAL, "+"homeLocationLat REAL, "+"homeLocationLong REAL )";
 
         // create books table
@@ -68,7 +68,12 @@ public class DBManager extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public void addUserInfo(UserInfo userInfo){
+    /**
+     * Inserts userInfo record in database and returns Id of inserted item
+     * @param userInfo
+     * @return
+     */
+    public int addUserInfo(UserInfo userInfo){
 
         //for logging
         Log.d("userInfo", userInfo.toString());
@@ -88,12 +93,13 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_HOMELOCATIONLONG, userInfo.getGetHomeLocationLong());
 
         // 3. insert
-        db.insert(TABLE_USERINFO, // table
+        long recordID = db.insert(TABLE_USERINFO, // table
                 null, //nullColumnHack
                 values); // key/value -> keys = column names/ values = column values
 
         // 4. close
         db.close();
+        return (int) recordID;
     }
 
     public UserInfo getUserInfo(int id){
@@ -198,10 +204,12 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     // Deleting single userInfo record
-    public void deleteBook(UserInfo userInfo) {
+    public void deleteRecord(UserInfo userInfo) {
 
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
+
+
 
         // 2. delete
         db.delete(TABLE_USERINFO,
@@ -211,7 +219,7 @@ public class DBManager extends SQLiteOpenHelper {
         // 3. close
         db.close();
 
-        Log.d("delete user info", userInfo.toString());
+        Log.d("deleted user info", userInfo.toString());
 
     }
     public void deleteAllUserInfo() {

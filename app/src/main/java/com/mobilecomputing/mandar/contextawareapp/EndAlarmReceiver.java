@@ -17,6 +17,7 @@ public class EndAlarmReceiver extends BroadcastReceiver {
 
         audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         changeRinger(Constants.RINGER_MODE_NORMAL);
+        NotificationHandler.sendNotification(context,Constants.NOTIFICATION_TITLE,Constants.NOTIFICATION_NORMAL_MESSAGE);
         Log.d("On end Alarm receiver ", "phone put on normal");
         //Put phone on silent
 
