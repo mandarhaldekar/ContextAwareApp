@@ -103,6 +103,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("Main activity","On create");
+        if (getIntent().getStringExtra("ExtraAcivity") != null) {
+            startActivity(new Intent(getIntent()).setClassName(this, getIntent().getStringExtra("ExtraAcivity")));
+        }
+
         setContentView(R.layout.activity_main);
         homelocation=(EditText)findViewById(R.id.editText);
         worklocation=(EditText)findViewById(R.id.editText2);
@@ -158,6 +164,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Log.d("Main activity","New intent");
+
+
+    }
 
     /**
      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.

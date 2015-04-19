@@ -42,6 +42,13 @@ public class Constants {
     public static final String NOTIFICATION_SILENT_MESSAGE = "Your phone is put on silent mode";
     public static final String NOTIFICATION_NORMAL_MESSAGE = "Your phone is put on normal mode";
 
+    //NotificationID
+    public static final int NOTIFICATION_ID_OF_RINGER = 0;
+    public static final int NOTIFICATION_ID_OF_HOME_APPLIANCES = 1;
+    public static final int NOTIFICATION_ID_OF_WEATHER = 2;
+    public static final int NOTIFICATION_ID_OF_TRAFFIC = 3;
+
+
 
 
 

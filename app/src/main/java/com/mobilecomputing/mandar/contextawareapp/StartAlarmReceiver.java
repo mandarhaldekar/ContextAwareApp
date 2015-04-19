@@ -28,7 +28,7 @@ public class StartAlarmReceiver extends BroadcastReceiver {
         audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 
         //Send notification
-        NotificationHandler.sendNotification(context,Constants.NOTIFICATION_TITLE,Constants.NOTIFICATION_SILENT_MESSAGE);
+        NotificationHandler.sendNotification(context,Constants.NOTIFICATION_TITLE,Constants.NOTIFICATION_SILENT_MESSAGE,Constants.NOTIFICATION_ID_OF_RINGER);
 
         //Put phone on silent
         changeRinger(Constants.RINGER_MODE_SILENT);
