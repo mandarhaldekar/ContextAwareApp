@@ -130,7 +130,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
         );
 
         // Send notification and log the transition details.
-        sendNotification(geofenceTransitionDetails,msg);
+        int notification_ID= 0;
+        if(msg.equalsIgnoreCase(""))
+            sendNotification(geofenceTransitionDetails,msg,Constants.NOTIFICATION_ID_OF_RINGER);
+        else
+            sendNotification(geofenceTransitionDetails,msg,Constants.NOTIFICATION_ID_OF_HOME_APPLIANCES);
 
         //Put phone on silent here
 
@@ -170,7 +174,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the MainActivity.
      */
-    private void sendNotification(String notificationDetails, String msg) {
+    private void sendNotification(String notificationDetails, String msg,int notification_ID) {
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
@@ -209,7 +213,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Issue the notification
-        mNotificationManager.notify(0, builder.build());
+        mNotificationManager.notify(notification_ID, builder.build());
     }
 
     /**

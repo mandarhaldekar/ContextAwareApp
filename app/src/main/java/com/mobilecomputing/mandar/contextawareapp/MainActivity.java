@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -471,14 +472,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         alarmIntent = PendingIntent.getBroadcast(this, recordID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.DAY_OF_WEEK,getDayofWeek(day));
 
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY*7, alarmIntent);
+                (DateUtils.DAY_IN_MILLIS)*7, alarmIntent);
     }
 
     public int getDayofWeek(String day){
@@ -486,7 +487,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         {
             case "Monday":
                 return Calendar.MONDAY;
-
             case "Tuesday":
                 return Calendar.TUESDAY;
             case "Wednesday":

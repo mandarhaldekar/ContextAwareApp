@@ -32,12 +32,12 @@ public class NotificationHandler {
         Intent notificationIntent = new Intent(context,WeatherActivity.class);
 
 
-
-        notificationIntent.putExtra("Temperature",weatherData.getString("Temperature"));
-        notificationIntent.putExtra("Humidity",weatherData.getString("Humidity"));
-        notificationIntent.putExtra("Wind",weatherData.getString("Wind"));
-        notificationIntent.putExtra("Date",weatherData.getString("Date"));
-        notificationIntent.putExtra("Condition",weatherData.getString("Condition"));
+//
+//        notificationIntent.putExtra("Temperature",weatherData.getString("Temperature"));
+//        notificationIntent.putExtra("Humidity",weatherData.getString("Humidity"));
+//        notificationIntent.putExtra("Wind",weatherData.getString("Wind"));
+//        notificationIntent.putExtra("Date",weatherData.getString("Date"));
+//        notificationIntent.putExtra("Condition",weatherData.getString("Condition"));
 
 
 

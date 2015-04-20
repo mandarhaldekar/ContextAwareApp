@@ -17,6 +17,7 @@ public class MissedCallReceiver extends BroadcastReceiver {
 
     static boolean isRinging=false;
     static boolean isReceived=false;
+    static boolean isMessageSent = false;
     static String callerPhoneNumber;
     static final String message = "I am at work location. I am busy right now. I will get back to you as soon as I can";
 
@@ -49,7 +50,7 @@ public class MissedCallReceiver extends BroadcastReceiver {
         // phone is idle
         if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
             // detect missed call
-            if(isRinging==true && isReceived==false){
+            if(isRinging==true && isReceived==false && isMessageSent == false){
                 Toast.makeText(mContext, "Got a missed call from : " + callerPhoneNumber, Toast.LENGTH_LONG).show();
                 Log.e("Call detection","Got a missed call from : " + callerPhoneNumber);
 
@@ -57,6 +58,7 @@ public class MissedCallReceiver extends BroadcastReceiver {
                 smsManager.sendTextMessage(callerPhoneNumber, null, message, null, null);
                 Toast.makeText(mContext, "SMS sent.",
                         Toast.LENGTH_LONG).show();
+                isMessageSent = true;
                 Log.e("Call detection","SMS Sent");
 
             }
