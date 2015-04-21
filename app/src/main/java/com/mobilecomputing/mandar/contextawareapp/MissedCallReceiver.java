@@ -13,6 +13,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 public class MissedCallReceiver extends BroadcastReceiver {
 
     static boolean isRinging=false;
@@ -50,18 +55,58 @@ public class MissedCallReceiver extends BroadcastReceiver {
         // phone is idle
         if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
             // detect missed call
-            if(isRinging==true && isReceived==false && isMessageSent == false){
-                Toast.makeText(mContext, "Got a missed call from : " + callerPhoneNumber, Toast.LENGTH_LONG).show();
-                Log.e("Call detection","Got a missed call from : " + callerPhoneNumber);
+            if(isRinging==true && isReceived==false && isMessageSent == false)
+            {
 
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(callerPhoneNumber, null, message, null, null);
-                Toast.makeText(mContext, "SMS sent.",
-                        Toast.LENGTH_LONG).show();
-                isMessageSent = true;
-                Log.e("Call detection","SMS Sent");
+                int flag = isWithinScheduleOrWorkLocation(mContext);
+                if(flag == 1)
+                {
+                    Toast.makeText(mContext, "Got a missed call from : " + callerPhoneNumber, Toast.LENGTH_LONG).show();
+                    Log.e("Call detection", "Got a missed call from : " + callerPhoneNumber);
+
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(callerPhoneNumber, null, message, null, null);
+                    Toast.makeText(mContext, "SMS sent.",
+                            Toast.LENGTH_LONG).show();
+                    isMessageSent = true;
+                    Log.e("Call detection", "SMS Sent");
+                }
 
             }
         }
+    }
+
+    private int isWithinScheduleOrWorkLocation(Context context) {
+
+        //Get all records and check timings with current time
+        DBManager db = new DBManager(context);
+        List<UserInfo> allScheduleList = db.getAllUserInfo();
+
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+        String dayOfWeek = dateFormat.format(date);
+
+
+        for(int i=0;i<allScheduleList.size();i++)
+        {
+            UserInfo userInfo = allScheduleList.get(i);
+
+            Log.e("Schedule check","day of the week is :"+dayOfWeek+" day in DB is "+userInfo.getDay());
+            if(userInfo.getDay()!= null && userInfo.getDay().equalsIgnoreCase(dayOfWeek) )
+            {
+//                Log.e("Schedule Check","Day match found");
+                //Compare time
+                if(CommonUtil.isWithin(userInfo.getFromTimeStamp(),userInfo.getToTimeStamp()))
+                {
+                    Log.e("Schedule Check","Within schedule found");
+
+                    return 1;
+                }
+
+            }
+        }
+
+        return 0;
     }
 }

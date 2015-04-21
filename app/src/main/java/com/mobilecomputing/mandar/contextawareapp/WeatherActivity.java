@@ -72,7 +72,7 @@ public class WeatherActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_weather);
         image = (ImageView)findViewById(R.id.icon);
         title = (TextView) findViewById(R.id.weather_title);
         dateText = (TextView) findViewById(R.id.dateText);
@@ -80,36 +80,63 @@ public class WeatherActivity extends Activity {
         conditionText = (TextView) findViewById(R.id.conditionText);
         humidityText = (TextView) findViewById(R.id.humidityText);
         windText = (TextView) findViewById(R.id.windText);
-        day1 = (TextView)findViewById(R.id.day1);
-        day2 = (TextView)findViewById(R.id.day2);
-        day3 = (TextView)findViewById(R.id.day3);
-        day4 = (TextView)findViewById(R.id.day4);
-//        weatherLink = (TextView)findViewById(R.id.weatherLink);
-//        Typeface tf = Typeface.createFromAsset(getAssets(),
-//                "Fonts/Roboto-Condensed.ttf");
-//        title.setText("Madurai Weather Report");
-//        tempText.setTypeface(tf);
-//        conditionText.setTypeface(tf);
-//        dateText.setTypeface(tf);
-//        humidityText.setTypeface(tf);
-//        windText.setTypeface(tf);
-//        title.setTypeface(tf);
-//        day1.setTypeface(tf);
-//        day2.setTypeface(tf);
-//        day3.setTypeface(tf);
-//        day4.setTypeface(tf);
-        ImageButton backBtn = (ImageButton) findViewById(R.id.backBtn);
-        ImageButton report = (ImageButton) findViewById(R.id.reportBtn);
+
+        getDataFromIntentAndSetIntoUI(getIntent());
+        Log.d("Weather tag","In on create");
 
 
 
 
     }
 
+    public void getDataFromIntentAndSetIntoUI(Intent intent){
+
+
+        Bundle extras = intent.getExtras();
+        if(intent == null){
+            Log.e("Weather Activity","Null intent received");
+            return;
+        }
+        if(extras != null)
+        {
+            if(extras.containsKey("Temperature"))
+            {
+
+                String temperature = extras.getString("Temperature");
+                tempText.setText("Temperature: " + temperature);
+            }
+            if(extras.containsKey("Humidity"))
+            {
+
+                String humidity = extras.getString("Humidity");
+                humidityText.setText("Humidity: " + humidity);
+            }
+            if(extras.containsKey("Condition"))
+            {
+
+                String condition = extras.getString("Condition");
+                conditionText.setText("Condition: " + condition);
+            }
+            if(extras.containsKey("Wind"))
+            {
+
+                String wind = extras.getString("Wind");
+                windText.setText("Wind: " + wind);
+            }
+            if(extras.containsKey("Date"))
+            {
+
+                String date = extras.getString("Date");
+                dateText.setText("Wind: " + date);
+            }
+
+        }
+    }
     @Override
     public void onNewIntent(Intent intent)
     {
         Log.d("Weather tag","In on new Intent");
+
         Bundle extras = intent.getExtras();
         if(extras != null)
         {
@@ -158,5 +185,11 @@ public class WeatherActivity extends Activity {
     }
 
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getDataFromIntentAndSetIntoUI(getIntent());
+
+    }
 }
 
