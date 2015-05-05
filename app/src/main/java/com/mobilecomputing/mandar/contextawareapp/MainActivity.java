@@ -121,7 +121,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         viewSchedule=(Button)findViewById(R.id.buttonViewSchedule);
         addrecord.setOnClickListener(this);
         tp=(TimePicker)findViewById(R.id.timePicker);
+        tp.setIs24HourView(true);
         tp1=(TimePicker)findViewById(R.id.timePicker1);
+        tp1.setIs24HourView(true);
         Sun=(CheckBox)findViewById(R.id.sun);
         Mon=(CheckBox)findViewById(R.id.mon);
         Tues=(CheckBox)findViewById(R.id.tues);
@@ -140,7 +142,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         addrecord.setOnClickListener(this);
 
         db = new DBManager(this);
-        db.deleteAllUserInfo();
+        //db.deleteAllUserInfo();
 
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);

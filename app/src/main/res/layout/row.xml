@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:layout_marginBottom="10dp">
     <CheckBox
         android:id="@+id/checkBox1"
         android:layout_width="wrap_content"
@@ -12,6 +13,10 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView\n\nview"
+        android:maxLines="3"
+        android:lines="3"
+        android:singleLine="false"
+        android:inputType="textMultiLine"/>
 
 </LinearLayout>

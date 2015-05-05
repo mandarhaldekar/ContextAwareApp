@@ -9,6 +9,7 @@
         android:scrollingCache="true"
         android:smoothScrollbar="true"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_weight="1">
     </ListView>
     <Button

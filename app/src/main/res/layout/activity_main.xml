@@ -59,6 +59,9 @@
         android:layout_marginTop="10dp"
         android:paddingBottom="10dp"
         android:textSize="20dp"  />
+
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -111,38 +114,65 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button"
                 android:text="Add to schedule"
+                android:layout_marginTop="40dp"
                 android:paddingTop="10dp"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buttonViewSchedule"
                 android:text="View Schedule"
+                android:layout_marginTop="20dp"
                 android:paddingTop="10dp"/>
         </LinearLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+
+            android:orientation="vertical"
+            >
+
+
 
             <TimePicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/timePicker"
                 android:paddingLeft="15dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:layout_marginTop="10dp"
                 android:timePickerMode="spinner" />
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="Start Time"
+                android:id="@+id/startTimeLabel"
+                android:paddingLeft="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                 />
             <TimePicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/timePicker1"
                 android:paddingLeft="15dp"
                 android:layout_below="@+id/timePicker"
-
                 android:timePickerMode="spinner"
-
+                android:scaleX="0.8"
+                android:scaleY="0.8"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End Time"
+                android:id="@+id/endTimeLabel"
+                android:layout_above="@id/timePicker1"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center" />
         </RelativeLayout>
 
 
