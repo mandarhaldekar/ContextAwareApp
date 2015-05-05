@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
+import android.location.Location;
 import android.media.AudioManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -52,6 +53,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     Button viewSchedule;
     EditText worklocation;
     EditText homelocation;
+    Location myWorkLocationObj,myHomeLocationObj;
     CheckBox Sun;
     CheckBox Mon;
     CheckBox Tues;
@@ -66,6 +68,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     String work;
     AudioManager audioManager;
     AlarmManager alarmManager;
+    Boolean isWorkLocationAvailable = false;
+
     private static Context context;
 
     public static Context getAppContext(){
@@ -126,6 +130,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Fri=(CheckBox)findViewById(R.id.fri);
         Sat=(CheckBox)findViewById(R.id.sat);
         days=new ArrayList<String>();
+        myHomeLocationObj = new Location("");
+        myWorkLocationObj = new Location("");
 
         MainActivity.context = getApplicationContext();
         alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
@@ -280,11 +286,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //Get lat and long
         LatLng workLocation = getLocationFromAddress(workAddress);
 
+
         if(workLocation == null){
             Toast.makeText(this, "Could not find this place, please enter proper address", Toast.LENGTH_LONG).show();
             return;
         }
-
+        isWorkLocationAvailable = true;
+        myWorkLocationObj.setLatitude(workLocation.latitude);
+        myWorkLocationObj.setLongitude(workLocation.longitude);
         Log.d(TAG,"Lat Long found"+Double.toString(workLocation.latitude)+","+Double.toString(workLocation.longitude));
         //Else Add lat and long to geofencelist
         addToGeoFenceList(workAddress,workLocation);
@@ -310,6 +319,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
             logSecurityException(securityException);
         }
+
+//        db.addUserInfo()
 
     }
 
@@ -387,6 +398,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (v.getId()==R.id.button)
         {
 
+            days.clear();
 
 
             fromstrDateTime = tp.getCurrentHour() + ":" + tp.getCurrentMinute();
@@ -423,8 +435,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             //Inserting into database
             for(int i=0;i<days.size();i++){
                 //Record Id is zero by default
+
+                if(!isWorkLocationAvailable){
+                    Toast.makeText(this,"Please Enter/Select work/school location",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 Log.d("DB INSERT","Adding day : "+days.get(i));
-                UserInfo userInfo = new UserInfo(0,fromstrDateTime,tostrDateTime,days.get(i),workLocationLat,workLocationLong,homeLocationLat,homeLocationLong);
+                UserInfo userInfo = new UserInfo(0,fromstrDateTime,tostrDateTime,days.get(i),myWorkLocationObj.getLatitude(),myWorkLocationObj.getLongitude(),homeLocationLat,homeLocationLong,work,home);
 
                 int recordID = db.addUserInfo(userInfo);
 
@@ -444,6 +462,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_SHORT).show();
             days.clear();
+            isWorkLocationAvailable = false;
 
         }
         else if (v.getId()==R.id.buttonViewSchedule) {

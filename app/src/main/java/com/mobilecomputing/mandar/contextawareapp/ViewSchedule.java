@@ -19,19 +19,41 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 
-public class ViewSchedule extends ActionBarActivity implements View.OnClickListener {
+public class ViewSchedule extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+    private static final String TAG = "Context Aware App" ;
     Button deleteButton;
     ListView lv;
     ArrayList<ScheduleModel> modelItems;
     DBManager db;
     private List<UserInfo> allScheduleList;
     CustomAdapter adapter;
+
+    /**
+     * Provides the entry point to Google Play services.
+     */
+    protected GoogleApiClient mGoogleApiClient;
+
+    /**
+     * The list of geofences used in this sample.
+     */
+    protected ArrayList<Geofence> mGeofenceList;
+    ArrayList<String> workLocationList = new ArrayList<String>();
+    ArrayList<LatLng> workLocationLatLngList = new ArrayList<LatLng>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +67,18 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
 
         db = new DBManager(this);
         allScheduleList = db.getAllUserInfo();
+        mGeofenceList = new ArrayList<Geofence>();
+
+        //Add distinct locations to GeoFence list
+        buildDistinctGeoFenceList(allScheduleList);
+
 
 
 
         modelItems = new ArrayList<ScheduleModel>();
         for(int i=0;i<allScheduleList.size();i++){
 
-            modelItems.add( new ScheduleModel(allScheduleList.get(i).getDay()+" "+allScheduleList.get(i).getFromTimeStamp()+" : "+allScheduleList.get(i).getToTimeStamp(),0));
+            modelItems.add( new ScheduleModel("Location : "+allScheduleList.get(i).getWorkLocationAddr()+" Time: "+allScheduleList.get(i).getDay()+" "+allScheduleList.get(i).getFromTimeStamp()+" : "+allScheduleList.get(i).getToTimeStamp(),0));
         }
 //        modelItems[0] = new ScheduleModel("pizza", 0);
 //        modelItems[1] = new ScheduleModel("burger", 1);
@@ -64,8 +91,49 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
         /**
          * TO-DO : Read schedule from database and display in the list
          */
+
+        buildGoogleApiClient();
     }
 
+    private void buildDistinctGeoFenceList(List<UserInfo> allScheduleList) {
+
+
+        for(int i=0;i<allScheduleList.size();i++)
+        {
+            String workLocation = allScheduleList.get(i).getWorkLocationAddr();
+            if(!workLocationList.contains(workLocation)){
+                workLocationList.add(workLocation);
+
+                workLocationLatLngList.add(new LatLng(allScheduleList.get(i).getWorkLocationLat(),allScheduleList.get(i).getWorkLocationLon()));
+            }
+
+        }
+    }
+
+
+    /**
+     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,6 +157,83 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+//
+//    @Override
+//    public void onClick(View v) {
+//
+//
+//        if(v.getId() == R.id.deleteButton)
+//        {
+//            ArrayList<UserInfo> listOfScheduleCopy = new ArrayList<UserInfo>(allScheduleList);
+//
+//            ArrayList<Integer> posToBeDeleted = new ArrayList<Integer>();
+//
+//
+//
+//            int totalItems = lv.getCount();
+//            for(int i=0;i<totalItems;i++)
+//            {
+//
+//                UserInfo userInfoItem = listOfScheduleCopy.get(i);
+//                LinearLayout linearLayout = (LinearLayout)lv.getChildAt(i);
+//                if(linearLayout == null)
+//                {
+//
+//                    Log.e("Removed","In break");
+//                    break;
+//                }
+//
+//                CheckBox checkBox = (CheckBox) linearLayout.getChildAt(0);
+//                Log.e("Removed", "In the loop");
+//                if(checkBox.isChecked())
+//                {
+//                    posToBeDeleted.add(i);
+//                    Log.e("Removed","TO BE DELETED at pos "+Integer.toString(i));
+//                    //Delete record from database
+//                    db.deleteRecord(userInfoItem);
+//
+//                    //Cancel alarm too
+//                    cancelCorrespondingAlarm(userInfoItem);
+//
+//
+//
+//                }
+//
+//
+//            }
+//
+//
+//
+//            Iterator<UserInfo> iter = allScheduleList.iterator();
+//
+//            while (iter.hasNext()) {
+//                UserInfo u = iter.next();
+//
+//                if (posToBeDeleted.contains(allScheduleList.indexOf(u)) )
+//                    iter.remove();
+//            }
+//
+//            Iterator<ScheduleModel> iter1 = modelItems.iterator();
+//            while (iter1.hasNext()) {
+//                ScheduleModel sc = iter1.next();
+//
+//                if (posToBeDeleted.contains(modelItems.indexOf(sc)) )
+//                    iter1.remove();
+//            }
+//
+//            //remove item from modelList
+//
+//
+//            /*
+//                Update list and adapter when deleted
+//                 */
+//            CustomAdapter adapter = new CustomAdapter(this, modelItems);
+//            lv.setAdapter(adapter);
+//
+//
+//        }
+//
+//    }
 
     @Override
     public void onClick(View v) {
@@ -96,6 +241,7 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
 
         if(v.getId() == R.id.deleteButton)
         {
+            mGeofenceList = new ArrayList<Geofence>();
             ArrayList<UserInfo> listOfScheduleCopy = new ArrayList<UserInfo>(allScheduleList);
 
             ArrayList<Integer> posToBeDeleted = new ArrayList<Integer>();
@@ -124,9 +270,36 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
                     //Delete record from database
                     db.deleteRecord(userInfoItem);
 
+                    //Is this last record with this location
+                    if(db.isZeroRecordWithThisLocation(userInfoItem.getWorkLocationAddr())){
+                        //Remove GEOFENCE
+                        //Find index in workLocationList
+                        LatLng latLng = new LatLng(userInfoItem.getWorkLocationLat(),userInfoItem.getWorkLocationLon());
+
+                        addToGeoFenceList(userInfoItem.getWorkLocationAddr(),latLng);
+
+                        if (!mGoogleApiClient.isConnected()) {
+                            Toast.makeText(this, getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        try {
+                            // Remove geofences.
+                            LocationServices.GeofencingApi.removeGeofences(
+                                    mGoogleApiClient,
+                                    // This is the same pending intent that was used in addGeofences().
+                                    getGeofencePendingIntent(Constants.WORK_GEOFENCE)
+                            ).setResultCallback(this); // Result processed in onResult().
+                        } catch (SecurityException securityException) {
+                            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+                            logSecurityException(securityException);
+                        }
+
+                        Log.e(TAG,"GEOFENCE REMOVED");
+                    }
+
                     //Cancel alarm too
                     cancelCorrespondingAlarm(userInfoItem);
-
+                    checkBox.setChecked(false);
 
 
                 }
@@ -137,20 +310,33 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
 
 
             Iterator<UserInfo> iter = allScheduleList.iterator();
-
+            ArrayList<UserInfo> itemstobedeleted=new ArrayList<UserInfo>();
+            for(int j=0;j<posToBeDeleted.size();j++)
+            {
+                itemstobedeleted.add(allScheduleList.get(posToBeDeleted.get(j)));
+            }
             while (iter.hasNext()) {
                 UserInfo u = iter.next();
 
-                if (posToBeDeleted.contains(allScheduleList.indexOf(u)) )
+                if (itemstobedeleted.contains(u))  {
                     iter.remove();
+
+
+                }
             }
 
             Iterator<ScheduleModel> iter1 = modelItems.iterator();
+            ArrayList<ScheduleModel> itemstobedeleted1=new ArrayList<ScheduleModel>();
+            for(int j=0;j<posToBeDeleted.size();j++)
+            {
+                itemstobedeleted1.add(modelItems.get(posToBeDeleted.get(j)));
+            }
             while (iter1.hasNext()) {
                 ScheduleModel sc = iter1.next();
 
-                if (posToBeDeleted.contains(modelItems.indexOf(sc)) )
+                if (itemstobedeleted1.contains(sc)) {
                     iter1.remove();
+                }
             }
 
             //remove item from modelList
@@ -198,5 +384,83 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.i(TAG, "Connected to GoogleApiClient");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        // onConnectionFailed.
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection to Google Play services was lost for some reason.
+        Log.i(TAG, "Connection suspended");
+
+        // onConnected() will be called again automatically when the service reconnects
+    }
+
+    @Override
+    public void onResult(Status status) {
+
+    }
+
+
+    private void logSecurityException(SecurityException securityException) {
+        Log.e(TAG, "Invalid location permission. " +
+                "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+    }
+
+    /**
+     * Gets a PendingIntent to send with the request to add or remove Geofences. Location Services
+     * issues the Intent inside this PendingIntent whenever a geofence transition occurs for the
+     * current list of geofences.
+     *
+     * @return A PendingIntent for the IntentService that handles geofence transitions.
+     */
+    private PendingIntent getGeofencePendingIntent(String geoFencetype) {
+        // Reuse the PendingIntent if we already have it.
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+
+        intent.putExtra(Constants.GEOFENCE_TYPE,geoFencetype);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // addGeofences() and removeGeofences().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+
+    public void addToGeoFenceList(String address,LatLng latlng){
+        mGeofenceList.add(new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId(address)
+
+                        // Set the circular region of this geofence.
+                .setCircularRegion(
+                        latlng.latitude,
+                        latlng.longitude,
+                        Constants.GEOFENCE_RADIUS_IN_METERS
+                )
+
+                        // Set the expiration duration of the geofence. This geofence gets automatically
+                        // removed after this period of time.
+                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setLoiteringDelay(10000)
+
+                        // Set the transition types of interest. Alerts are only generated for these
+                        // transition. We track entry and exit transitions in this sample.
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT|Geofence.GEOFENCE_TRANSITION_DWELL)
+
+                        // Create the geofence.
+                .build());
+    }
 
 }

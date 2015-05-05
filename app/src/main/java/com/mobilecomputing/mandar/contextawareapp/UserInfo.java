@@ -14,10 +14,29 @@ public class UserInfo {
     private Double homeLocationLat;
     private Double homeLocationLong;
 
+    public String getWorkLocationAddr() {
+        return workLocationAddr;
+    }
+
+    public void setWorkLocationAddr(String workLocationAddr) {
+        this.workLocationAddr = workLocationAddr;
+    }
+
+    public String getHomeLocationAddr() {
+        return homeLocationAddr;
+    }
+
+    public void setHomeLocationAddr(String homeLocationAddr) {
+        this.homeLocationAddr = homeLocationAddr;
+    }
+
+    private String workLocationAddr;
+    private String homeLocationAddr;
+
     public UserInfo(){
 
     }
-    public UserInfo(int recordID, String fromTimeStamp, String toTimeStamp, String day, Double workLocationLat, Double workLocationLon, Double homeLocationLat, Double homeLocationLong) {
+    public UserInfo(int recordID, String fromTimeStamp, String toTimeStamp, String day, Double workLocationLat, Double workLocationLon, Double homeLocationLat, Double homeLocationLong,String workLocationAddr,String homeLocationAddr) {
         this.recordID = recordID;
         this.fromTimeStamp = fromTimeStamp;
         this.toTimeStamp = toTimeStamp;
@@ -26,6 +45,8 @@ public class UserInfo {
         this.workLocationLong = workLocationLon;
         this.homeLocationLat = homeLocationLat;
         this.homeLocationLong = homeLocationLong;
+        this.workLocationAddr = workLocationAddr;
+        this.homeLocationAddr = homeLocationAddr;
     }
 
     public int getRecordID() {
@@ -99,6 +120,7 @@ public class UserInfo {
                 ", fromTimeStamp='" + fromTimeStamp + '\'' +
                 ", toTimeStamp='" + toTimeStamp + '\'' +
                 ", day='" + day + '\'' +
+                ", workLocationAddress=" + workLocationAddr +
                 ", workLocationLat=" + workLocationLat +
                 ", workLocationLong=" + workLocationLong +
                 ", homeLocationLat=" + homeLocationLat +

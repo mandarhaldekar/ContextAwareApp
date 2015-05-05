@@ -32,8 +32,10 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_WORKLOCATIONLONG = "workLocationLong";
     private static final String KEY_HOMELOCATIONLAT = "homeLocationLat";
     private static final String KEY_HOMELOCATIONLONG = "homeLocationLong";
+    private static final String KEY_WORKLOCATIONADDR = "workLocationAddress";
+    private static final String KEY_HOMELOCATIONADDR = "homeLocationAddress";
 
-    private static final String[] COLUMNS = {KEY_RECORDID,KEY_FROMTIMESTAMP,KEY_TOTIMESTAMP,KEY_WORKLOCATIONLAT,KEY_WORKLOCATIONLONG,KEY_HOMELOCATIONLAT,KEY_HOMELOCATIONLONG};
+    private static final String[] COLUMNS = {KEY_RECORDID,KEY_FROMTIMESTAMP,KEY_TOTIMESTAMP,KEY_WORKLOCATIONLAT,KEY_WORKLOCATIONLONG,KEY_HOMELOCATIONLAT,KEY_HOMELOCATIONLONG,KEY_WORKLOCATIONADDR,KEY_HOMELOCATIONADDR};
 
 
     public DBManager(Context context) {
@@ -52,7 +54,7 @@ public class DBManager extends SQLiteOpenHelper {
         // SQL statement to create book table
         String CREATE_USERINFO_TABLE = "CREATE TABLE userInfo ( " +
                 "recordID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "fromTimeStamp TEXT, "+"toTimeStamp TEXT, "+"day TEXT, "+"workLocationLat REAL, "+"workLocationLong REAL, "+"homeLocationLat REAL, "+"homeLocationLong REAL )";
+                "fromTimeStamp TEXT, "+"toTimeStamp TEXT, "+"day TEXT, "+"workLocationLat REAL, "+"workLocationLong REAL, "+"homeLocationLat REAL, "+"homeLocationLong REAL,workLocationAddress TEXT,homeLocationAddress TEXT )";
 
         // create books table
         db.execSQL(CREATE_USERINFO_TABLE);
@@ -91,6 +93,8 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_WORKLOCATIONLONG, userInfo.getWorkLocationLon());
         values.put(KEY_HOMELOCATIONLAT, userInfo.getHomeLocationLat());
         values.put(KEY_HOMELOCATIONLONG, userInfo.getGetHomeLocationLong());
+        values.put(KEY_WORKLOCATIONADDR, userInfo.getWorkLocationAddr());
+        values.put(KEY_HOMELOCATIONADDR, userInfo.getHomeLocationAddr());
 
         // 3. insert
         long recordID = db.insert(TABLE_USERINFO, // table
@@ -132,6 +136,9 @@ public class DBManager extends SQLiteOpenHelper {
         userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(5)));
         userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(6)));
         userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(7)));
+        userInfo.setWorkLocationAddr(cursor.getString(8));
+        userInfo.setHomeLocationAddr(cursor.getString(9));
+
 
         Log.d("getBook("+id+")", userInfo.toString());
 
@@ -163,6 +170,8 @@ public class DBManager extends SQLiteOpenHelper {
                 userInfo.setWorkLocationLon(Double.parseDouble(cursor.getString(5)));
                 userInfo.setHomeLocationLat(Double.parseDouble(cursor.getString(6)));
                 userInfo.setGetHomeLocationLong(Double.parseDouble(cursor.getString(7)));
+                userInfo.setWorkLocationAddr(cursor.getString(8));
+                userInfo.setHomeLocationAddr(cursor.getString(9));
 
 
                 // Add book to books
@@ -190,6 +199,9 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_WORKLOCATIONLONG, userInfo.getWorkLocationLon());
         values.put(KEY_HOMELOCATIONLAT, userInfo.getHomeLocationLat());
         values.put(KEY_HOMELOCATIONLONG, userInfo.getGetHomeLocationLong());
+        values.put(KEY_WORKLOCATIONADDR, userInfo.getWorkLocationAddr());
+        values.put(KEY_HOMELOCATIONADDR, userInfo.getHomeLocationAddr());
+
         // 3. updating row
         int i = db.update(TABLE_USERINFO, //table
                 values, // column/value
@@ -235,5 +247,26 @@ public class DBManager extends SQLiteOpenHelper {
 
         Log.d("delete user info","Deleted all records");
 
+    }
+
+    public boolean isZeroRecordWithThisLocation(String workLocationAddr) {
+        List<UserInfo> userInfoList = new LinkedList<UserInfo>();
+
+        // 1. build the query
+        String query = "SELECT  COUNT(*) FROM " + TABLE_USERINFO+" WHERE "+KEY_WORKLOCATIONADDR +"='"+workLocationAddr+"'";
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        int count = -1;
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                count = cursor.getInt(0);
+            }
+        }
+        if(count == 0)
+            return true;
+        return false;
     }
 }
