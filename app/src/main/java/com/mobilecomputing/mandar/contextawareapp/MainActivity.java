@@ -21,9 +21,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -44,7 +47,7 @@ import java.util.Map;
 import android.location.Address;
 
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class MainActivity extends FragmentActivity implements View.OnClickListener,AdapterView.OnItemSelectedListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
     private static final String TAG = "Context Aware App" ;
     TimePicker tp;
     DBManager db;
@@ -69,8 +72,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     AudioManager audioManager;
     AlarmManager alarmManager;
     Boolean isWorkLocationAvailable = false;
-
+    Spinner spinner;
     private static Context context;
+    boolean isworkselectedflag=false;  //To see if work location is selected from dropdown or textbox. True : selected from dropdown
+    List<UserInfo> userInfoListInAdapter;
 
     public static Context getAppContext(){
         return MainActivity.context;
@@ -102,6 +107,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
      * Used to persist application state about whether geofences were added.
      */
     private SharedPreferences mSharedPreferences;
+    ArrayAdapter<String> dataAdapter;
+    ArrayList<String> locationDropDownlist;
 
 
     /////
@@ -171,6 +178,35 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         ///
 
+    }
+    // add items into spinner dynamically
+    public void addItemsOnSpinner() {
+
+        spinner = (Spinner) findViewById(R.id.spinner);
+        locationDropDownlist = new ArrayList<String>();
+        locationDropDownlist.add("");
+        userInfoListInAdapter = new ArrayList<UserInfo>();
+        userInfoListInAdapter.add(0, new UserInfo());
+        List<UserInfo> infolist = db.getAllUserInfo();
+
+        for (int i=0;i<infolist.size();i++) {
+
+            if(!locationDropDownlist.contains(infolist.get(i).getWorkLocationAddr())) {
+                locationDropDownlist.add(infolist.get(i).getWorkLocationAddr());
+                userInfoListInAdapter.add(infolist.get(i));
+            }
+        }
+        dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, locationDropDownlist);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addItemsOnSpinner();
+        spinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -284,6 +320,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //Get string
 
         String workAddress = worklocation.getText().toString();
+
 
         //Get lat and long
         LatLng workLocation = getLocationFromAddress(workAddress);
@@ -427,18 +464,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 days.add("Saturday");
             }
             home=homelocation.getText().toString();
-            work=worklocation.getText().toString();
+
+            if (isworkselectedflag==false)
+            {
+                work = worklocation.getText().toString();
+
+            }
+
             //get Lan and Long from this address and put into database
             Double homeLocationLat = 0.0;
             Double homeLocationLong = 0.0;
-            Double workLocationLat = 0.0;
-            Double workLocationLong = 0.0;
+
 
             //Inserting into database
             for(int i=0;i<days.size();i++){
                 //Record Id is zero by default
 
-                if(!isWorkLocationAvailable){
+                if(!isWorkLocationAvailable && !isworkselectedflag){
                     Toast.makeText(this,"Please Enter/Select work/school location",Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -461,10 +503,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
 
-
+            //TO-BE REMOVED
             Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_SHORT).show();
             days.clear();
             isWorkLocationAvailable = false;
+            isworkselectedflag=false;
+            addItemsOnSpinner();
 
         }
         else if (v.getId()==R.id.buttonViewSchedule) {
@@ -593,6 +637,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+       isworkselectedflag=true;
+        if(position == 0){
+            isworkselectedflag = false;
+        }
+        else {
 
+            work = parent.getItemAtPosition(position).toString();
+            myWorkLocationObj.setLatitude(userInfoListInAdapter.get(position).getWorkLocationLat());
+            myWorkLocationObj.setLongitude(userInfoListInAdapter.get(position).getWorkLocationLon());
+        }
 
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }
