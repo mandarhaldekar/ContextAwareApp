@@ -9,45 +9,47 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:singleLine="true"
             android:scrollHorizontally="true"
-
             android:hint="Enter the home address" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/editText2"
+            android:singleLine="true"
             android:scrollHorizontally="true"
             android:hint="Enter work/school location"
             android:layout_below="@+id/editText"
             android:layout_alignParentLeft="true"
-             />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add/Change"
-                android:id="@+id/buttonHomeLocation"
-                android:onClick="addHomeLocationButtonHandler"
-                android:layout_alignParentRight="true"
-                android:layout_toLeftOf="@+id/editText"
-                android:layout_alignBottom="@+id/editText"
-                 />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add"
-                android:id="@+id/buttonWorkLocation"
-                android:onClick="addWorkLocationButtonHandler"
-                android:layout_alignParentRight="true"
-                android:layout_toLeftOf="@+id/editText2"
-                android:layout_alignBottom="@+id/editText2"
-                 />
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add/Change"
+            android:id="@+id/buttonHomeLocation"
+            android:onClick="addHomeLocationButtonHandler"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/editText"
+            android:layout_alignBottom="@+id/editText"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:id="@+id/buttonWorkLocation"
+            android:onClick="addWorkLocationButtonHandler"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/editText2"
+            android:layout_alignBottom="@+id/editText2"
+            />
 
 
     </RelativeLayout>
