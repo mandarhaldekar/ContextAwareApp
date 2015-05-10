@@ -504,7 +504,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
             //TO-BE REMOVED
-            Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Record added "+ days.toString()+"  "+fromstrDateTime+" - "+tostrDateTime,Toast.LENGTH_SHORT).show();
             days.clear();
             isWorkLocationAvailable = false;
             isworkselectedflag=false;
@@ -543,12 +543,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.DAY_OF_WEEK,getDayofWeek(day));
         if(calendar.getTimeInMillis()-System.currentTimeMillis()<0) {
-            Toast.makeText(this,"week is:"+i,Toast.LENGTH_LONG).show();
+
             calendar.set(Calendar.WEEK_OF_MONTH, ++i);
-            Toast.makeText(this,"now week is:"+calendar.get(Calendar.WEEK_OF_MONTH)+"& diff:"+new Long(calendar.getTimeInMillis()-System.currentTimeMillis()),Toast.LENGTH_LONG).show();
+
 
         }
-        Toast.makeText(this,"time difference"+new Long(calendar.getTimeInMillis()).toString()+":"+new Long(System.currentTimeMillis())+"hence diff:"+new Long(calendar.getTimeInMillis()-System.currentTimeMillis()),Toast.LENGTH_LONG).show();
+
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 (DateUtils.DAY_IN_MILLIS)*7, alarmIntent);
     }
