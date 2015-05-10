@@ -176,7 +176,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         buildGoogleApiClient();
 
 
-        ///
+
 
     }
     // add items into spinner dynamically
@@ -537,12 +537,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         alarmIntent = PendingIntent.getBroadcast(this, recordID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
+        int i = calendar.get(Calendar.WEEK_OF_MONTH);
+
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.DAY_OF_WEEK,getDayofWeek(day));
+        if(calendar.getTimeInMillis()-System.currentTimeMillis()<0) {
+            Toast.makeText(this,"week is:"+i,Toast.LENGTH_LONG).show();
+            calendar.set(Calendar.WEEK_OF_MONTH, ++i);
+            Toast.makeText(this,"now week is:"+calendar.get(Calendar.WEEK_OF_MONTH)+"& diff:"+new Long(calendar.getTimeInMillis()-System.currentTimeMillis()),Toast.LENGTH_LONG).show();
 
-
+        }
+        Toast.makeText(this,"time difference"+new Long(calendar.getTimeInMillis()).toString()+":"+new Long(System.currentTimeMillis())+"hence diff:"+new Long(calendar.getTimeInMillis()-System.currentTimeMillis()),Toast.LENGTH_LONG).show();
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 (DateUtils.DAY_IN_MILLIS)*7, alarmIntent);
     }
