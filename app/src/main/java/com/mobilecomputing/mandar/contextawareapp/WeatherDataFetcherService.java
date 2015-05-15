@@ -114,6 +114,7 @@ public class WeatherDataFetcherService extends IntentService {
         msg.putString("Humidity",humidity);
         msg.putString("Date",date);
         msg.putString("Wind",wind);
+        msg.putParcelable("BitmapImage",icon);
 
 
 

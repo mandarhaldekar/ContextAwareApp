@@ -58,7 +58,7 @@ import android.widget.Toast;
 public class WeatherActivity extends Activity {
 
 
-    Bitmap icon = null;
+
     TextView title, tempText, dateText, conditionText, windText, humidityText,day1,day2, day3, day4;
     ImageView image;
     ArrayList<String> weather = new ArrayList<String>();
@@ -127,7 +127,16 @@ public class WeatherActivity extends Activity {
             {
 
                 String date = extras.getString("Date");
-                dateText.setText("Wind: " + date);
+                dateText.setText("Date: " + date);
+            }
+            if(extras.containsKey("BitmapImage"))
+            {
+                Log.d("BitmapImage","Image received..setting image in image view");
+                Bitmap bitMapImage = (Bitmap) extras.getParcelable("BitmapImage");
+                if(bitMapImage == null){
+                    Log.d("BitmapImage","Null Image !!");
+                }
+                image.setImageBitmap(bitMapImage);
             }
 
         }

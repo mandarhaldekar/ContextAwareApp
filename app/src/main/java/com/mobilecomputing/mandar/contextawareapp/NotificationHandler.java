@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class NotificationHandler {
         notificationIntent.putExtra("Wind",weatherData.getString("Wind"));
         notificationIntent.putExtra("Date",weatherData.getString("Date"));
         notificationIntent.putExtra("Condition",weatherData.getString("Condition"));
+        notificationIntent.putExtra("BitmapImage",(Bitmap)weatherData.getParcelable("BitmapImage"));
 
 
 
