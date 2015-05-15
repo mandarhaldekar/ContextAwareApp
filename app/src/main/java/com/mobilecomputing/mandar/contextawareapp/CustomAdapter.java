@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * This is custom adapter for list view used in ViewSchedule activity
+ */
 public class CustomAdapter extends ArrayAdapter{
     ArrayList<ScheduleModel> modelItems = null;
         Context context;

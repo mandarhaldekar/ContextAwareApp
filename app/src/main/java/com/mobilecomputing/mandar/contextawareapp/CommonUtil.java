@@ -12,6 +12,12 @@ import java.util.Date;
  */
 public class CommonUtil {
 
+    /**
+     * This function compares whether current time lies within two date-time limits
+     * @param from: from date-time
+     * @param to : to date-time
+     * @return : returns true if current time lies between the parameters passed, else false
+     */
     public static boolean isWithin(String from, String to)
     {
 

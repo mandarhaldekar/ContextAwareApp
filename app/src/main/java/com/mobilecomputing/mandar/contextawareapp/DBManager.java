@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by Mandar on 4/14/2015.
+ * It handles all operation related to SQLLite database
  */
 public class DBManager extends SQLiteOpenHelper {
 
@@ -51,22 +52,22 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // SQL statement to create book table
+        // SQL statement to create userInfo table
         String CREATE_USERINFO_TABLE = "CREATE TABLE userInfo ( " +
                 "recordID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "fromTimeStamp TEXT, "+"toTimeStamp TEXT, "+"day TEXT, "+"workLocationLat REAL, "+"workLocationLong REAL, "+"homeLocationLat REAL, "+"homeLocationLong REAL,workLocationAddress TEXT,homeLocationAddress TEXT )";
 
-        // create books table
+        // create userInfo table
         db.execSQL(CREATE_USERINFO_TABLE);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-// Drop older books table if existed
+// Drop older userInfo table if existed
         db.execSQL("DROP TABLE IF EXISTS userInfo");
 
-        // create fresh books table
+        // create fresh userInfo table
         this.onCreate(db);
     }
 
@@ -87,7 +88,7 @@ public class DBManager extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(KEY_FROMTIMESTAMP, userInfo.getFromTimeStamp()); // get FromTimeStamp
-        values.put(KEY_TOTIMESTAMP, userInfo.getToTimeStamp()); // get author
+        values.put(KEY_TOTIMESTAMP, userInfo.getToTimeStamp());
         values.put(KEY_DAY,userInfo.getDay());
         values.put(KEY_WORKLOCATIONLAT, userInfo.getWorkLocationLat());
         values.put(KEY_WORKLOCATIONLONG, userInfo.getWorkLocationLon());
@@ -140,7 +141,7 @@ public class DBManager extends SQLiteOpenHelper {
         userInfo.setHomeLocationAddr(cursor.getString(9));
 
 
-        Log.d("getBook("+id+")", userInfo.toString());
+        Log.d("getUserInfo("+id+")", userInfo.toString());
 
         // 5. return userInfo
         return userInfo;
@@ -179,7 +180,7 @@ public class DBManager extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        Log.d("getAllBooks()", userInfoList.toString());
+        Log.d("getAllUserInfo()", userInfoList.toString());
 
         // return books
         return userInfoList;
@@ -234,6 +235,8 @@ public class DBManager extends SQLiteOpenHelper {
         Log.d("deleted user info", userInfo.toString());
 
     }
+
+    //Delete all records from database
     public void deleteAllUserInfo() {
 
         // 1. get reference to writable DB
@@ -249,6 +252,11 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * This function checks if userInfo table contains only one record with location = workLocationAddr
+     * @param workLocationAddr : workLocation
+     * @return: true is it only one record is present, else return false
+     */
     public boolean isZeroRecordWithThisLocation(String workLocationAddr) {
         List<UserInfo> userInfoList = new LinkedList<UserInfo>();
 
