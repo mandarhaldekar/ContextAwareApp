@@ -78,7 +78,7 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
         modelItems = new ArrayList<ScheduleModel>();
         for(int i=0;i<allScheduleList.size();i++){
 
-            modelItems.add( new ScheduleModel("Location : "+allScheduleList.get(i).getWorkLocationAddr()+" Time: "+allScheduleList.get(i).getDay()+" "+allScheduleList.get(i).getFromTimeStamp()+" : "+allScheduleList.get(i).getToTimeStamp(),0));
+            modelItems.add( new ScheduleModel("Location : "+allScheduleList.get(i).getWorkLocationAddr()+". Time: "+allScheduleList.get(i).getDay()+" "+allScheduleList.get(i).getFromTimeStamp()+" : "+allScheduleList.get(i).getToTimeStamp(),0));
         }
 //        modelItems[0] = new ScheduleModel("pizza", 0);
 //        modelItems[1] = new ScheduleModel("burger", 1);
