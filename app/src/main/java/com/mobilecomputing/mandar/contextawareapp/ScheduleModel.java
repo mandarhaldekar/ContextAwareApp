@@ -2,6 +2,7 @@ package com.mobilecomputing.mandar.contextawareapp;
 
 /**
  * Created by Mandar on 4/17/2015.
+ * Model class to hold item in list view of ViewSchedule class
  */
 public class ScheduleModel {
     String content;

@@ -264,6 +264,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Find latitude and longitude of given address
+     * @param strAddress : address
+     * @return : LatLng object containing latitude and longitude
+     */
     public LatLng getLocationFromAddress(String strAddress) {
 
 
@@ -316,6 +321,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         // Create the geofence.
                 .build());
     }
+
+    /**
+     * this is click event handler for Add work location button
+     * @param v
+     */
     public void addWorkLocationButtonHandler(View v){
         //Get string
 
@@ -363,7 +373,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-
+    /**
+     * This is click event handler for add home location buttton
+     * @param v
+     */
     public void addHomeLocationButtonHandler(View v){
         //Get string
 

@@ -13,6 +13,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+/**
+ * This is broadcast receiver that gets executed when alarm ends
+ */
 public class StartAlarmReceiver extends BroadcastReceiver {
     AudioManager audioManager;
     public StartAlarmReceiver() {

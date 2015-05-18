@@ -38,13 +38,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+/**
+ * This is broadcast receiver that gets executed when alarm ends
+ */
 public class EndAlarmReceiver extends BroadcastReceiver {
     AudioManager audioManager;
     public EndAlarmReceiver() {
     }
 
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
+
         // an Intent broadcast.
 
         audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -54,19 +57,23 @@ public class EndAlarmReceiver extends BroadcastReceiver {
         //Put phone on silent
 
 
-
+        //Start intent service in the background to fetch the data
         Intent weatherIntent = new Intent(context, WeatherDataFetcherService.class);
 
         context.startService(weatherIntent);
 
+        //Send notification for traffic
         NotificationHandler.sendMapNotification(context,"Traffic update","");
-
 
 
 
     }
 
 
+    /**
+     * This functions changes mode of ringer equal to input parameter.
+     * @param ringerMode
+     */
     public void changeRinger(String ringerMode){
 
         if(ringerMode.equalsIgnoreCase(Constants.RINGER_MODE_SILENT)){

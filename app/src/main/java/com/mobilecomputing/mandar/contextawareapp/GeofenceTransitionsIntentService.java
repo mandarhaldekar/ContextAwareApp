@@ -25,12 +25,9 @@ public class GeofenceTransitionsIntentService extends IntentService {
     protected static final String TAG = "geofence-transitions-service";
     AudioManager audioManager;
 
-    /**
-     * This constructor is required, and calls the super IntentService(String)
-     * constructor with the name for a worker thread.
-     */
+
     public GeofenceTransitionsIntentService() {
-        // Use the TAG to name the worker thread.
+
         super(TAG);
     }
 

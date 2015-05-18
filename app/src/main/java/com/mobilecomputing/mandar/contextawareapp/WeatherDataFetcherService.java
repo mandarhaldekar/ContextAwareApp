@@ -45,11 +45,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
+ * It is an intent service which runs in the background and fetches weather data from yahoo weather api
  */
 public class WeatherDataFetcherService extends IntentService {
 
@@ -316,22 +312,6 @@ System.out.println("Remaining: "+tkn.nextToken());
         return qResult;
 
     }
-//
-//    protected void onPostExecute(String result) {
-//        System.out.println("POST EXECUTE");
-//
-//        tempText.setText("Temperature: "+temperature);
-//        conditionText.setText("Condition: "+condition);
-//        dateText.setText("Date: "+date);
-//        humidityText.setText("Humidity: "+humidity);
-//        windText.setText("Wind: "+wind);
-//        image.setImageBitmap(icon);
-//        day1.setText(weather.get(3));
-//        day2.setText(weather.get(4));
-//        day3.setText(weather.get(5));
-//        day4.setText(weather.get(6));
-////            weatherLink.setText(Html.fromHtml(link));
-//
-//    }
+
 
 }

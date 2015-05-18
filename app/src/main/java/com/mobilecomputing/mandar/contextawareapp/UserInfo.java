@@ -2,6 +2,7 @@ package com.mobilecomputing.mandar.contextawareapp;
 
 /**
  * Created by Mandar on 4/14/2015.
+ * This is model class to represent a record in database table userInfo
  */
 public class UserInfo {
 

@@ -158,7 +158,7 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        // 3. go over each row, build book and add it to list
+        // 3. go over each row, build userInfo and add it to list
         UserInfo userInfo = null;
         if (cursor.moveToFirst()) {
             do {
@@ -175,14 +175,14 @@ public class DBManager extends SQLiteOpenHelper {
                 userInfo.setHomeLocationAddr(cursor.getString(9));
 
 
-                // Add book to books
+                // Add userInfo to userInfos
                 userInfoList.add(userInfo);
             } while (cursor.moveToNext());
         }
 
         Log.d("getAllUserInfo()", userInfoList.toString());
 
-        // return books
+        // return userInfos
         return userInfoList;
     }
 

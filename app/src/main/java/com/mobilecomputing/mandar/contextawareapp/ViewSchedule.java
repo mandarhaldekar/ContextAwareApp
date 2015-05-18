@@ -33,7 +33,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
+/**
+ * This activity shows list of schedule to the user and also allows him/her to delete them
+ */
 public class ViewSchedule extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
     private static final String TAG = "Context Aware App" ;
     Button deleteButton;

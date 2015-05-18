@@ -14,15 +14,14 @@ import android.util.Log;
 
 /**
  * Created by Mandar on 4/17/2015.
+ *
+ * This class deals with the job of posting a notification in the notification bar
+ *
+ *
  */
 public class NotificationHandler {
 
-    /**
-     * Posts a notification in the notification bar when a transition is detected.
-     * If the user clicks the notification, control goes to the MainActivity.
-     *
-     * TO-DO; Open weather activity when user clicks on the notification
-     */
+
     public static void sendWeatherNotification(Context context,String notificationTitle, String msg,Bundle weatherData) {
         // Create an explicit content Intent that starts the main Activity.
 

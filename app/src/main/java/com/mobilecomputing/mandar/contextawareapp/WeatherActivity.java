@@ -55,6 +55,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * It receives weather data from push notification and shows it on UI
+ */
 public class WeatherActivity extends Activity {
 
 
