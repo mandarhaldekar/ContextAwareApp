@@ -82,11 +82,7 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
 
             modelItems.add( new ScheduleModel("Location : "+allScheduleList.get(i).getWorkLocationAddr()+". Time: "+allScheduleList.get(i).getDay()+" "+allScheduleList.get(i).getFromTimeStamp()+" : "+allScheduleList.get(i).getToTimeStamp(),0));
         }
-//        modelItems[0] = new ScheduleModel("pizza", 0);
-//        modelItems[1] = new ScheduleModel("burger", 1);
-//        modelItems[2] = new ScheduleModel("olives", 1);
-//        modelItems[3] = new ScheduleModel("orange", 0);
-//        modelItems[4] = new ScheduleModel("tomato", 1);
+
         adapter = new CustomAdapter(this, modelItems);
         lv.setAdapter(adapter);
 
@@ -159,83 +155,7 @@ public class ViewSchedule extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-//
-//    @Override
-//    public void onClick(View v) {
-//
-//
-//        if(v.getId() == R.id.deleteButton)
-//        {
-//            ArrayList<UserInfo> listOfScheduleCopy = new ArrayList<UserInfo>(allScheduleList);
-//
-//            ArrayList<Integer> posToBeDeleted = new ArrayList<Integer>();
-//
-//
-//
-//            int totalItems = lv.getCount();
-//            for(int i=0;i<totalItems;i++)
-//            {
-//
-//                UserInfo userInfoItem = listOfScheduleCopy.get(i);
-//                LinearLayout linearLayout = (LinearLayout)lv.getChildAt(i);
-//                if(linearLayout == null)
-//                {
-//
-//                    Log.e("Removed","In break");
-//                    break;
-//                }
-//
-//                CheckBox checkBox = (CheckBox) linearLayout.getChildAt(0);
-//                Log.e("Removed", "In the loop");
-//                if(checkBox.isChecked())
-//                {
-//                    posToBeDeleted.add(i);
-//                    Log.e("Removed","TO BE DELETED at pos "+Integer.toString(i));
-//                    //Delete record from database
-//                    db.deleteRecord(userInfoItem);
-//
-//                    //Cancel alarm too
-//                    cancelCorrespondingAlarm(userInfoItem);
-//
-//
-//
-//                }
-//
-//
-//            }
-//
-//
-//
-//            Iterator<UserInfo> iter = allScheduleList.iterator();
-//
-//            while (iter.hasNext()) {
-//                UserInfo u = iter.next();
-//
-//                if (posToBeDeleted.contains(allScheduleList.indexOf(u)) )
-//                    iter.remove();
-//            }
-//
-//            Iterator<ScheduleModel> iter1 = modelItems.iterator();
-//            while (iter1.hasNext()) {
-//                ScheduleModel sc = iter1.next();
-//
-//                if (posToBeDeleted.contains(modelItems.indexOf(sc)) )
-//                    iter1.remove();
-//            }
-//
-//            //remove item from modelList
-//
-//
-//            /*
-//                Update list and adapter when deleted
-//                 */
-//            CustomAdapter adapter = new CustomAdapter(this, modelItems);
-//            lv.setAdapter(adapter);
-//
-//
-//        }
-//
-//    }
+
 
     @Override
     public void onClick(View v) {

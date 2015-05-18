@@ -93,17 +93,6 @@ public class WeatherDataFetcherService extends IntentService {
         //Set data in intent
         Bundle msg = new Bundle();
 
-//        tempText.setText("Temperature: "+temperature);
-//        conditionText.setText("Condition: "+condition);
-//        dateText.setText("Date: "+date);
-//        humidityText.setText("Humidity: "+humidity);
-//        windText.setText("Wind: "+wind);
-//        image.setImageBitmap(icon);
-//        day1.setText(weather.get(3));
-//        day2.setText(weather.get(4));
-//        day3.setText(weather.get(5));
-//        day4.setText(weather.get(6));
-//
 
         msg.putString("Temperature",temperature);
         msg.putString("Condition",condition);
@@ -166,7 +155,7 @@ public class WeatherDataFetcherService extends IntentService {
                 woeid = jsonObject.getJSONObject("query").getJSONObject("results").getJSONObject("Result").getInt("woeid");
 
                 Log.d("Weather", "Count is 1 here");
-//                    woeid = ((JSONArray) queryJsonObj.getJSONObject("results")).getJSONObject(0).getInt("woeid");
+
 
 
             }
@@ -277,12 +266,6 @@ public class WeatherDataFetcherService extends IntentService {
             link = matcher.group(1);
         }
 
-/* String test = (Html.fromHtml(desc)).toString();
-System.out.println("test: "+ test);
-StringTokenizer tkn = new StringTokenizer(test);
-for(int i=0; i < tkn.countTokens(); i++){
-System.out.println("Remaining: "+tkn.nextToken());
-}*/
 
         InputStream in = null;
         try {
